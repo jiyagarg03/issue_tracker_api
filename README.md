@@ -1,24 +1,38 @@
-# README
+# Issue / Product Feedback Management API
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+A backend-focused Rails API for managing issues, comments, and issue lifecycles.
 
-Things you may want to cover:
+## Tech Stack
 
-* Ruby version
+- Ruby on Rails (API-only)
+- SQLite
+- JWT Authentication
+- ActiveRecord
 
-* System dependencies
+## Features
 
-* Configuration
+- User authentication (JWT)
+- Create and manage issues
+- Issue lifecycle (open → in_progress → resolved)
+- Priority-based issues
+- Commenting system
+- Filtering & pagination
+- Basic analytics
 
-* Database creation
+## API Endpoints
 
-* Database initialization
+### Auth
 
-* How to run the test suite
+- POST /signup
+- POST /login
 
-* Services (job queues, cache servers, search engines, etc.)
+### Issues
 
-* Deployment instructions
+- POST /issues
+- GET /issues
+- PATCH /issues/:id
+- GET /issues/analytics
 
-* ...
+### Comments
+
+- POST /issues/:issue_id/comments

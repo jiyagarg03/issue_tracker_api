@@ -13,8 +13,15 @@ class Issue < ApplicationRecord
     high: 2
   }
 
+  has_many :comments, dependent: :destroy
+
+  scope :by_status, ->(status) { where(status: status) }
+  scope :by_priority, ->(priority) { where(priority: priority) }
+
+
   validates :title, presence: true
   validates :status, presence: true
   validates :priority, presence: true
+
 end
 

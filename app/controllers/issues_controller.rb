@@ -12,13 +12,39 @@ class IssuesController < ApplicationController
   end
 
   def index
-    issues = Issue.all
+  page = params[:page].to_i > 0 ? params[:page].to_i : 1
+  per_page = 10
+  offset = (page - 1) * per_page
 
-    issues = issues.where(status: params[:status]) if params[:status]
-    issues = issues.where(priority: params[:priority]) if params[:priority]
+  issues = Issue.all
+  issues = issues.by_status(params[:status]) if params[:status]
+  issues = issues.by_priority(params[:priority]) if params[:priority]
 
-    render json: issues
+  render json: {
+    page: page,
+    count: issues.count,
+    issues: issues.limit(per_page).offset(offset)
+  }
+end
+
+  def update
+    issue = Issue.find(params[:id])
+
+    if issue.update(status: params[:status])
+        render json: issue
+    else
+        render json: { errors: issue.errors.full_messages }, status: :unprocessable_entity
+    end
   end
+
+  def analytics
+  render json: {
+    total: Issue.count,
+    open: Issue.open.count,
+    in_progress: Issue.in_progress.count,
+    resolved: Issue.resolved.count
+  }
+end
 
   private
 
