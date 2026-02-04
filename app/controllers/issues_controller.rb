@@ -27,17 +27,26 @@ class IssuesController < ApplicationController
   }
 end
 
-  def update
-    issue = Issue.find(params[:id])
+def update
+  issue = Issue.find(params[:id])
 
-    if issue.update(status: params[:status])
-        render json: issue
-    else
-        render json: { errors: issue.errors.full_messages }, status: :unprocessable_entity
-    end
+  unless issue.user == @current_user || @current_user.admin?
+    return render json: { error: "Forbidden" }, status: :forbidden
   end
 
-  def analytics
+  if issue.update(status: params[:status])
+    render json: issue
+  else
+    render json: { errors: issue.errors.full_messages }, status: :unprocessable_entity
+  end
+end
+
+
+def analytics
+  unless @current_user.admin?
+    return render json: { error: "Forbidden" }, status: :forbidden
+  end
+
   render json: {
     total: Issue.count,
     open: Issue.open.count,
@@ -45,6 +54,7 @@ end
     resolved: Issue.resolved.count
   }
 end
+
 
   private
 
